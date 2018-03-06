@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Secure chat app server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anthony",
+  "license": "ISC",
+  "dependencies": {
+    "async": "*",
+    "bcrypt-nodejs": "*",
+    "body-parser": "*",
+    "email-validator": "*",
+    "express": "*",
+    "fs": "*",
+    "jsonwebtoken": "*",
+    "keypair": "*",
+    "mongoose": "*",
+    "morgan": "*",
+    "path": "*",
+    "phone-number-validation": "*",
+    "socket.io": "*"
+  }
+}
