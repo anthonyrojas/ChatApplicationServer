@@ -51,7 +51,7 @@ exports.joinConversation = (req, res, next)=>{
 exports.getConversations = (req, res, next)=>{
     Conversation.find({users: res.locals.me._id}, (err, conversationsFound)=>{
         if(err){
-            
+            res.status(404).json({error: 'No users'});
         }
     });
 }
