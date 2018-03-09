@@ -66,12 +66,10 @@ exports.loginRequired = (req, res, next)=>{
 
 exports.getPublicKey = (req, res, next)=>{
     const userFound = res.locals.userFound;
-    console.log(userFound._id);
     PubKey.findOne({user: userFound._id}).populate('user').exec((err, currentKey)=>{
         if(err){
             return res.status(404).json({error: 'Could not find the user\'s key.'});
         }else{
-            console.log(currentKey);
             res.locals.userKey = currentKey;
             next();
         }

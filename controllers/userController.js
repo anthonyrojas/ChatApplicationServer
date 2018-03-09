@@ -75,7 +75,7 @@ exports.findUser = (req, res, next)=>{
         if(req.body.phone === res.locals.me.phone){
             res.status(400).json({error: 'You cannot start a conversation with yourself.'});
         }else{
-            User.findOne({phone: res.locals.me.phone}, (err, userFound)=>{
+            User.findOne({phone: req.body.phone}, (err, userFound)=>{
                 if(err){
                     return res.status(404).json({error: `User with ${req.body.phone} not found. Please make sure to include the contry call code and area code. (Ex: 13231234567)`});
                 }else{
