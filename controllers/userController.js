@@ -2,6 +2,7 @@ const config = require('../config');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const emailValidator = require('email-validator');
+const keypair = require('keypair');
 const User = require('../models/user');
 const NumberValidation = require('phone-number-validation');
 const phoneValidator = new NumberValidation({
@@ -40,6 +41,7 @@ exports.register = (req, res, next)=>{
                         res.status(422).json({message: 'Error validating phone number. Please try again in a while.'});
                     }else{
                         if(numRes.valid){
+                            const keys = keypair();
                             const salt = bcrypt.genSaltSync(12);
                             const hashPassword = bcrypt.hashSync(req.body.password, salt);
                             var newUser = new User({
@@ -47,15 +49,15 @@ exports.register = (req, res, next)=>{
                                 email: req.body.email,
                                 firstName: req.body.firstName,
                                 lastName: req.body.lastName,
-                                password: hashPassword
+                                password: hashPassword,
+                                publicKey: keys.public
                             });
                             newUser.save((err, savedUser)=>{
                                 if(err){
                                     res.status(422).json({message: 'Could not create user at this time. Please try again later.'});
                                 }else{
                                     savedUser.password = undefined;
-                                    res.locals.user = savedUser;
-                                    next();
+                                    res.json({message: 'Registered successfully!', user: savedUser, privateKey: keys.private});
                                 }
                             });
                         }else{
@@ -107,15 +109,5 @@ exports.findUsers = (req, res, next)=>{
         }).catch(error =>{
             res.status(404).json({error: 'One or more users not found.'});
         });
-        /*usersSearched.forEach(phone => {
-            User.findOne({phone: phone}, (err, userFound)=>{
-                if(err){
-                    return res.status(404).json({error: `User with the number ${phone} not found. Please be sure to include the conutry calling code and area code with the phone number. (Ex: 13231234567)`});
-                }else{
-                    usersFound.push(userFound);
-                }
-            });
-        });*/
-        //next();
     }
 }

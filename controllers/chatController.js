@@ -7,7 +7,6 @@ const Invitation = require('../models/invitation');
 exports.createConversation = (req, res, next)=>{
     let userFound = res.locals.userFound;
     let me = res.locals.me;
-    let userKey = res.locals.userKey;
     let conversationUsers = [];
     conversationUsers.push(me._id);
     conversationUsers.push(userFound._id);
@@ -29,17 +28,17 @@ exports.createConversation = (req, res, next)=>{
                     return res.status(500).json({error: 'Failed to notify users of new conversation.'});
                 }
             });
-            res.status(200).json({message: 'New conversation started!', userKey: userKey.key});
+            res.status(200).json({message: 'New conversation started!', user: userFound});
         }
     });
 }
 
+// TODO: fix invites in group chat, it is sending to creator of conversation too
 exports.createGroupConversation = (req, res, next)=>{
-    const me = res.locals.me;
-    let conversationUsers = res.locals.usersFound.map(convoUser => convoUser._id);
-    conversationUsers.push(me._id);
     const usersFound = res.locals.usersFound;
-    const userKeys = res.locals.userKeys;
+    const me = res.locals.me;
+    let conversationUsers = usersFound;
+    conversationUsers.push(me);
     var newConvo = new Conversation({
         participants: conversationUsers,
         chatType: 'group'
@@ -48,10 +47,11 @@ exports.createGroupConversation = (req, res, next)=>{
         if(err){
             res.status(500).json({error: 'Could not create this conversation.'});
         }else{
-            usersFound.forEach(u => {
+            conversationUsers = conversationUsers.filter(val => val._id != me._id);
+            res.locals.usersFound = res.locals.usersFound.filter(val => val._id != me._id);
+            res.locals.usersFound.forEach(u => {
                 let invite = new Invitation({
                     conversation: savedConvo,
-                    sender: me,
                     sendTo: u
                 });
                 invite.save((inviteErr, savedInvite)=>{
@@ -60,7 +60,7 @@ exports.createGroupConversation = (req, res, next)=>{
                     }
                 });
             });
-            res.status(200).json({message: 'New conversation started!', userKeys: userKeys});
+            res.status(200).json({message: 'New conversation started!', users: res.locals.usersFound});
         }
     });
 }
@@ -78,15 +78,21 @@ exports.getInvites = (req, res, next)=>{
 }
 
 exports.joinConversation = (req, res, next)=>{
-    if(!req.params.conversation){
+    if(!req.params.invite){
         res.status(400).json({error: 'You must specify the conversation.'});
     }else{
-        console.log(req.params.conversation);
-        Conversation.findOne({_id: req.params.conversation}, (err, foundConvo)=>{
+        Invitation.findOneAndRemove({_id: req.params.invite}).populate({
+            path: 'conversation',
+            model: 'Conversation',
+            populate:{
+                path: 'participants',
+                model: 'User'
+            }
+        }).exec((err, foundInvite)=>{
             if(err){
-                res.status(404).json({error: 'Could not join this conversation.'});
+                res.status(404).json({error: 'Could not find conversation asssociated with this inivite.'});
             }else{
-                res.json({convo: foundConvo});
+                res.status(200).json({message:'Welcome to the conversation!', invite: foundInvite});
             }
         });
     }
@@ -98,6 +104,7 @@ exports.getConversations = (req, res, next)=>{
             res.status(404).json({error: 'No users'});
         }else{
             res.status(200).json({conversations: conversationsFound});
+            
         }
     });
 }
