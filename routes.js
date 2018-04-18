@@ -15,9 +15,13 @@ module.exports = (app)=>{
     //start a new group conversation
     chatRoutes.post('/conversation/group', authController.loginRequired, userController.findUsers, chatController.createGroupConversation);
     chatRoutes.get('/invitations', authController.loginRequired, chatController.getInvites);
-    chatRoutes.get('/:invite/join', authController.loginRequired, chatController.joinConversation);//confirm to joining conversation
-    chatRoutes.post('/:conversation/message', authController.loginRequired, chatController.sendMessage);//send a new message
-    chatRoutes.get('/conversations', authController.loginRequired, chatController.getConversations);//get all conversations from a user
-    chatRoutes.get('/:conversation/messages', authController.loginRequired, chatController.getMessages);//get all messages in a conversation
+    //confirm to joining a conversation
+    chatRoutes.get('/:invite/join', authController.loginRequired, chatController.joinConversation);
+    //send a new message
+    chatRoutes.post('/:conversation/message', authController.loginRequired, chatController.sendMessage);
+    //get all conversations from a user
+    chatRoutes.get('/conversations', authController.loginRequired, chatController.getConversations);
+    //get all messages in a conversation
+    chatRoutes.get('/:conversation/messages', authController.loginRequired, chatController.getMessages);
     apiRoutes.use('/chat', chatRoutes);
 }

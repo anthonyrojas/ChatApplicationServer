@@ -28,6 +28,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    privateKey:{
+        type: String,
+        required: true
+    },
     created:{
         type: Date,
         required: true,

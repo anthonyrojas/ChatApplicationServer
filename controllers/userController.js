@@ -50,7 +50,8 @@ exports.register = (req, res, next)=>{
                                 firstName: req.body.firstName,
                                 lastName: req.body.lastName,
                                 password: hashPassword,
-                                publicKey: keys.public
+                                publicKey: keys.public,
+                                privateKey: keys.private
                             });
                             newUser.save((err, savedUser)=>{
                                 if(err){

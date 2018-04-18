@@ -14,10 +14,17 @@ exports.login = (req, res, next)=>{
         if(err){
             res.status(400).json({error: 'Account not found. Invalid phone number.'});
         }else{
-            if(!userFound.comparePassword(req.body.password)){
+            if(!userFound){
+                res.status(404).json({error: 'Account not found. Invalid phone number.'});
+            }else if(!userFound.comparePassword(req.body.password)){
                 res.status(400).json({error: 'Wrong password.'});
             }else{
-                res.status(200).json({token: jwt.sign( {_id: userFound._id, phone: userFound.phone, firstName: userFound.firstName, email: userFound.email},config.secret)});
+                res.status(200).json(
+                    {
+                        token: jwt.sign( {_id: userFound._id, phone: userFound.phone, firstName: userFound.firstName, email: userFound.email},config.secret),
+                        privateKey: userFound.privateKey
+                    }
+                );
             }
         }
     });
