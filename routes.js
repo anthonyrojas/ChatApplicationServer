@@ -7,7 +7,9 @@ const chatController = require('./controllers/chatController');
 module.exports = (app)=>{
     const apiRoutes = express.Router();
     const chatRoutes = express.Router();
+    //register new user
     apiRoutes.post('/register', userController.register);
+    //login a user
     apiRoutes.post('/login', authController.login);
     app.use('/api', apiRoutes);
     //one-to-one new conversation

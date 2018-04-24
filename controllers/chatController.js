@@ -99,14 +99,21 @@ exports.joinConversation = (req, res, next)=>{
 }
 
 exports.getConversations = (req, res, next)=>{
-    Conversation.find({participants: res.locals.me._id}, (err, conversationsFound)=>{
+    Conversation.find({participants: res.locals.me._id}).populate('participants').exec((err, conversationsFound)=>{
+        if(err){
+            res.status(404).json({error: 'No conversations'});
+        }else{
+            res.status(200).json({conversations: conversationsFound});
+        }
+    });
+    /*Conversation.find({participants: res.locals.me._id}, (err, conversationsFound)=>{
         if(err){
             res.status(404).json({error: 'No users'});
         }else{
             res.status(200).json({conversations: conversationsFound});
             
         }
-    });
+    });*/
 }
 
 exports.sendMessage = (req, res, next)=>{

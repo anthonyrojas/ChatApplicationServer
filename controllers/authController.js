@@ -21,7 +21,7 @@ exports.login = (req, res, next)=>{
             }else{
                 res.status(200).json(
                     {
-                        token: jwt.sign( {_id: userFound._id, phone: userFound.phone, firstName: userFound.firstName, email: userFound.email},config.secret),
+                        token: jwt.sign( {_id: userFound._id, phone: userFound.phone, firstName: userFound.firstName, lastName: userFound.lastName},config.secret),
                         privateKey: userFound.privateKey
                     }
                 );
