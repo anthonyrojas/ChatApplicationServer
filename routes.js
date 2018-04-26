@@ -25,5 +25,7 @@ module.exports = (app)=>{
     chatRoutes.get('/conversations', authController.loginRequired, chatController.getConversations);
     //get all messages in a conversation
     chatRoutes.get('/:conversation/messages', authController.loginRequired, chatController.getMessages);
+    //get all public keys from a conversation
+    chatRoutes.get('/keys/:conversation', authController.loginRequired, chatController.getPublicKeys);
     apiRoutes.use('/chat', chatRoutes);
 }
