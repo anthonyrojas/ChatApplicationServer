@@ -18,7 +18,7 @@ exports.createConversation = (req, res, next)=>{
         if(err){
             res.status(500).json({error: 'Failed to create this conversation.'});
         }else{
-            var invite = new Invitation({
+            /*var invite = new Invitation({
                 conversation: savedConvo._id,
                 sendTo: userFound._id,
                 created: savedConvo.created
@@ -27,7 +27,7 @@ exports.createConversation = (req, res, next)=>{
                 if(err){
                     return res.status(500).json({error: 'Failed to notify users of new conversation.'});
                 }
-            });
+            });*/
             res.status(200).json({message: 'New conversation started!', user: userFound});
         }
     });
@@ -47,7 +47,7 @@ exports.createGroupConversation = (req, res, next)=>{
         if(err){
             res.status(500).json({error: 'Could not create this conversation.'});
         }else{
-            conversationUsers = conversationUsers.filter(val => val._id != me._id);
+            /*conversationUsers = conversationUsers.filter(val => val._id != me._id);
             res.locals.usersFound = res.locals.usersFound.filter(val => val._id != me._id);
             res.locals.usersFound.forEach(u => {
                 let invite = new Invitation({
@@ -59,7 +59,7 @@ exports.createGroupConversation = (req, res, next)=>{
                         return res.status(500).json({error: 'Failed to notify users of new conversation.'});
                     }
                 });
-            });
+            });*/
             res.status(200).json({message: 'New conversation started!', users: res.locals.usersFound});
         }
     });
