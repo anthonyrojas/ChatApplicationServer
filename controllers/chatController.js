@@ -144,3 +144,14 @@ exports.getMessages = (req, res, next)=>{
         }
     });
 }
+
+exports.getPublicKeys = (req, res, next)=>{
+    Conversation.findOne({_id: req.params.conversation}).populate('participants').exec((err, convo)=>{
+        if(err){
+            res.status(404).json({error: 'No users found in this conversation'});
+        }else{
+            let convoUsers = convo.participants.filter(u=> u._id !== res.locals.me._id);
+            res.status(200).json({users: convoUsers});
+        }
+    });
+}
