@@ -21,7 +21,7 @@ exports.login = (req, res, next)=>{
             }else{
                 res.status(200).json(
                     {
-                        token: jwt.sign( {_id: userFound._id, phone: userFound.phone, firstName: userFound.firstName, lastName: userFound.lastName},config.secret),
+                        token: jwt.sign( {_id: userFound._id, phone: userFound.phone},config.secret),
                         privateKey: userFound.privateKey
                     }
                 );
@@ -37,7 +37,8 @@ exports.loginRequired = (req, res, next)=>{
         const tokenHeader = req.headers.authorization;
         jwt.verify(tokenHeader, config.secret, (err,decoded)=>{
             if(err){
-                res.status(422).json({error: 'It seems your sign-in token has been tampered with. Please log out and sign in again.'});
+                res.status(422).json({error: err.message});
+                //res.status(422).json({error: 'It seems your sign-in token has been tampered with. Please log out and sign in again.'});
             }else{
                 User.findOne({phone: decoded.phone}, (err, userFound)=>{
                     if(err){
