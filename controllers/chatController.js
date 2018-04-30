@@ -150,8 +150,16 @@ exports.getPublicKeys = (req, res, next)=>{
         if(err){
             res.status(404).json({error: 'No users found in this conversation'});
         }else{
-            let convoUsers = convo.participants.filter(u=> u._id !== res.locals.me._id);
-            res.status(200).json({users: convoUsers});
+            if(convo != null && convo != undefined){
+                let convoParticipants = convo.participants;
+                let convoUsers = convoParticipants.filter(user => {
+                    user.privateKey = undefined;
+                    return user._id.toString() !== res.locals.me._id.toString();
+                });
+                res.status(200).json({users: convoUsers});
+            }else{
+                res.status(404).json({error: 'Conversation could not be opened'});
+            }
         }
     });
 }
