@@ -22,7 +22,9 @@ exports.login = (req, res, next)=>{
                 res.status(200).json(
                     {
                         token: jwt.sign( {_id: userFound._id, phone: userFound.phone},config.secret),
-                        privateKey: userFound.privateKey
+                        userID: userFound._id,
+                        privateKey: userFound.privateKey,
+                        publicKey: userFound.publicKey
                     }
                 );
             }
