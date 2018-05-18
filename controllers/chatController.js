@@ -123,7 +123,8 @@ exports.sendMessage = (req, res, next)=>{
         var newMessage = new Message({
             sender: res.locals.me,
             conversation: req.params.conversation,
-            content: req.body.content
+            content: req.body.content,
+            senderContent: req.body.senderContent
         });
         newMessage.save((err, savedMessage)=>{
             if(err){
@@ -154,6 +155,7 @@ exports.getPublicKeys = (req, res, next)=>{
                 let convoParticipants = convo.participants;
                 let convoUsers = convoParticipants.filter(user => {
                     user.privateKey = undefined;
+                    user.password = undefined;
                     return user._id.toString() !== res.locals.me._id.toString();
                 });
                 res.status(200).json({users: convoUsers});

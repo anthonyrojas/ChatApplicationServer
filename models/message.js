@@ -17,6 +17,10 @@ const MessageSchema = new Schema({
         type: String,
         required: true
     },
+    senderContent: {
+        type: String,
+        required: true
+    },
     created: {
         type: Date,
         default: Date.now,
