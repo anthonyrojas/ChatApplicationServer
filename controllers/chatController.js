@@ -117,14 +117,16 @@ exports.getConversations = (req, res, next)=>{
 }
 
 exports.sendMessage = (req, res, next)=>{
-    if(!req.body.content){
+    if(!req.body.content || !req.body.senderContent){
         res.status(400).json({error: 'You must enter message content.'});
     }else{
+        const content = req.body.content.toString();
+        const senderContent = req.body.senderContent.toString();
         var newMessage = new Message({
             sender: res.locals.me,
             conversation: req.params.conversation,
-            content: req.body.content,
-            senderContent: req.body.senderContent
+            content: content,
+            senderContent: senderContent
         });
         newMessage.save((err, savedMessage)=>{
             if(err){
